@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YaqinTaxi | Onlayn zakaz</title>
+    <link rel="stylesheet" href="{% static 'orders/styles.css' %}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-box">yaqin</div>
+            <div class="brand-text">taxi</div>
+        </div>
+        <nav class="nav-links">
+            <a href="#">Biz haqimizda</a>
+            <a href="#">Biznes uchun</a>
+            <a href="#">Haydovchilar</a>
+            <a href="#">Ma'lumot</a>
+        </nav>
+        <div class="top-actions">
+            <select aria-label="Til">
+                <option selected>O'zbekcha</option>
+                <option>Ruscha</option>
+                <option>English</option>
+            </select>
+            <button class="ghost">Kirish</button>
+            <button class="primary">Ro'yxatdan o'tish</button>
+        </div>
+    </header>
+
+    <main class="layout">
+        <section class="panel">
+            <div class="inputs">
+                <label class="input">
+                    <span>Qayerdan?</span>
+                    <input id="origin" type="text" placeholder="Manzil kiriting">
+                </label>
+                <label class="input">
+                    <span>Qayerga?</span>
+                    <input id="destination" type="text" placeholder="Boriladigan manzil">
+                </label>
+            </div>
+
+            <div class="drivers" id="drivers"></div>
+
+            <div class="payment-row">
+                <span>To'lov turi</span>
+                <div class="pill-group" id="payment">
+                    <button data-value="naqd" class="active">Naqd</button>
+                    <button data-value="karta">Karta</button>
+                </div>
+            </div>
+
+            <label class="input">
+                <span>Haydovchi uchun izoh</span>
+                <textarea id="note" rows="2" placeholder="Masalan: Mashina toza, tez va xavfsiz bo'lsin"></textarea>
+            </label>
+
+            <div class="order-footer">
+                <div>
+                    <div class="eta-label">Taxminiy kelish</div>
+                    <div id="eta-value">-</div>
+                </div>
+                <button class="cta" id="order-btn">Zakaz qilish</button>
+            </div>
+        </section>
+
+        <section class="map-area">
+            <iframe
+                id="map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2995.981894765449!2d69.23945967639566!3d41.29949579944842!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38ae8ad1ca88d7f9%3A0x4a0a16e17687a421!2sAmir%20Temur%20Maydoni!5e0!3m2!1sen!2suz!4v1689861823412!5m2!1sen!2suz"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </section>
+    </main>
+
+    {{ drivers|json_script:"drivers-data" }}
+    <script src="{% static 'orders/app.js' %}"></script>
+</body>
+</html>
