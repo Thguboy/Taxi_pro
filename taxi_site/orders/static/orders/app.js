@@ -42,9 +42,15 @@ function renderDrivers() {
       card.addEventListener("click", () => {
         driverStore.selectedId = drv.id;
         renderDrivers();
+        showEta(drv);
+        tryAutoOrder();
       });
       container.appendChild(card);
     });
+
+  // ensure ETA label matches the current selection
+  const current = driverStore.list.find((d) => d.id === driverStore.selectedId);
+  if (current) showEta(current);
 }
 
 async function refreshDrivers() {
@@ -88,18 +94,18 @@ function updateMap() {
   map.src = url;
 }
 
-async function sendOrder() {
+async function sendOrder(auto = false) {
   const origin = document.getElementById("origin").value.trim();
   const destination = document.getElementById("destination").value.trim();
   const note = document.getElementById("note").value.trim();
   const driverId = driverStore.selectedId;
 
   if (!origin || !destination) {
-    alert("Qayerdan va Qayerga maydonlari to'ldirilishi shart.");
+    if (!auto) alert("Qayerdan va Qayerga maydonlari to'ldirilishi shart.");
     return;
   }
   if (!driverId) {
-    alert("Haydovchini tanlang.");
+    if (!auto) alert("Haydovchini tanlang.");
     return;
   }
 
@@ -121,10 +127,10 @@ async function sendOrder() {
     if (!data.ok) throw new Error(data.error || "Noma'lum xato");
     document.getElementById("eta-value").textContent = `${data.eta} daqiqa`;
     updateMap();
-    alert("Buyurtma qabul qilindi! Haydovchi yo'lda.");
+    if (!auto) alert("Buyurtma qabul qilindi! Haydovchi yo'lda.");
   } catch (e) {
     console.error(e);
-    alert("Buyurtma yuborishda xatolik: " + e.message);
+    if (!auto) alert("Buyurtma yuborishda xatolik: " + e.message);
   }
 }
 
@@ -145,3 +151,18 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
+function showEta(driver) {
+  if (!driver) return;
+  const etaEl = document.getElementById("eta-value");
+  etaEl.textContent = `${driver.eta} daqiqa`;
+}
+
+function tryAutoOrder() {
+  // Auto-zakaz faqat manzillar to'liq bo'lsa ishlaydi
+  const origin = document.getElementById("origin").value.trim();
+  const destination = document.getElementById("destination").value.trim();
+  if (origin && destination) {
+    sendOrder(true);
+  }
+}
